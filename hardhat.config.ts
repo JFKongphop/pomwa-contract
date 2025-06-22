@@ -6,7 +6,7 @@ dotenv.config();
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.27",
+    version: "0.8.24",
     settings: {
       outputSelection: {
         "*": {
@@ -37,19 +37,31 @@ const config: HardhatUserConfig = {
     sepolia: {
       url: process.env.SEPOLIA! || "",
       accounts: [process.env.PRIVATE_KEY!]
+    },
+    scroll: {
+      url: process.env.SCROLL! || "",
+      accounts: [process.env.PRIVATE_KEY!]
     }
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY! || "",
+    apiKey: process.env.E! || "",
     customChains: [
       {
-        network: "holesky",
-        chainId: 17000,
+        network: "scroll",
+        chainId: 534351,
         urls: {
-          apiURL: "https://api-holesky.etherscan.io/api",
-          browserURL: "https://holesky.etherscan.io"
+          apiURL: "https://api-sepolia.scrollscan.com/api",
+          browserURL: "https://sepolia.scrollscan.com"
         }
-      }
+      },
+      {
+        network: "sepolia",
+        chainId: 11155111,
+        urls: {
+          apiURL: "https://api-sepolia.etherscan.io/api",
+          browserURL: "https://sepolia.etherscan.io"
+        }
+      },
     ]
   }
 };
