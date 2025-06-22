@@ -31,7 +31,7 @@ export type OutPut = {
 export const generateProof = async (input: Input) => {
   const { proof, publicSignals } = await groth16.fullProve(
     input,
-    'proof-source/withdraw_js/withdraw.wasm',
+    'proof-source/withdraw.wasm',
     'proof-source/withdraw.zkey'
   );
 

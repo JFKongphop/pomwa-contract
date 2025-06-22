@@ -4,8 +4,14 @@ com:
 call:
 	node shortcuts/call.js
 
-t:
-	npx hardhat test test/test.ts 
+gt:
+	npx hardhat test test/groth16Verifier.ts 
 
 deploy:
 	npx hardhat run --network ${chain} scripts/deploy.ts
+
+dph:
+	npx hardhat run --network scroll scripts/hasher.ts
+
+dpv:
+	npx hardhat run --network scroll scripts/groth16Verifier.ts
