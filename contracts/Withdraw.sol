@@ -5,7 +5,7 @@ import {Client} from "@chainlink/contracts-ccip/contracts/libraries/Client.sol";
 import {CCIPReceiver} from "@chainlink/contracts-ccip/contracts/applications/CCIPReceiver.sol";
 import "./MerkleTreeWithHistory.sol";
 
-contract Receiver is CCIPReceiver, MerkleTreeWithHistory {
+contract Withdraw is CCIPReceiver, MerkleTreeWithHistory {
   event MessageReceived(
     bytes32 indexed messageId,
     uint64 indexed sourceChainSelector,

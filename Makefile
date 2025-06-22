@@ -18,3 +18,13 @@ dph:
 
 dpv:
 	npx hardhat run --network scroll scripts/groth16Verifier.ts
+
+dpd:
+	npx hardhat run --network sepolia scripts/deposit.ts
+
+dpw:
+	npx hardhat run --network scroll scripts/withdraw.ts
+
+slt:
+	node shortcuts/sendLinkToken.js
+
