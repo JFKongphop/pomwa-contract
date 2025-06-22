@@ -1,0 +1,19 @@
+{
+  "name": "pomwa-contract",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "5.0.2",
+    "@types/circomlibjs": "^0.1.6",
+    "@types/snarkjs": "^0.7.9",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.12"
+  },
+  "dependencies": {
+    "circomlib": "^2.0.5",
+    "circomlibjs": "^0.1.7",
+    "fixed-merkle-tree": "^0.7.3",
+    "@chainlink/contracts": "^1.4.0",
+    "@chainlink/contracts-ccip": "^1.6.0",
+    "snarkjs": "^0.7.5"
+  }
+}
