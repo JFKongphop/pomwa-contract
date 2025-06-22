@@ -63,10 +63,17 @@ contract Deposit is OwnerIsCreator {
       evm2AnyMessage
     );
 
-    if (fees > s_linkToken.balanceOf(address(this)))
+    if (fees > userLinkTokenBalance[msg.sender]) {
+      revert NotEnoughBalance(userLinkTokenBalance[msg.sender], fees);
+    } 
+
+    if (fees > s_linkToken.balanceOf(address(this))) {
       revert NotEnoughBalance(s_linkToken.balanceOf(address(this)), fees);
+    }
 
     s_linkToken.approve(address(s_router), fees);
+
+    userLinkTokenBalance[msg.sender] -= fees;
 
     messageId = s_router.ccipSend(destinationScrollSepolia, evm2AnyMessage);
 
