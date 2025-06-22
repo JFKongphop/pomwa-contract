@@ -7,6 +7,9 @@ call:
 gt:
 	npx hardhat test test/groth16Verifier.ts 
 
+ht:
+	npx hardhat test test/hasher.ts 
+
 deploy:
 	npx hardhat run --network ${chain} scripts/deploy.ts
 
