@@ -62,11 +62,12 @@ describe('Contract', async () => {
           pathIndices: pathIndices.map((x) => x.toString())
         };
 
-        const [a, b, c] = await generateProof(input);
+        const [a, b, c, publicSignals] = await generateProof(input);
 
-        const valid = await contract.verifyProof(a, b, c);
+        const valid = await contract.verifyProof(a, b, c, publicSignals);
 
         expect(valid).true;
+        expect(Number(publicSignals)).equal(loanAmount)
       }
     });
   })
