@@ -49,9 +49,10 @@ contract Withdraw is CCIPReceiver, MerkleTreeWithHistory, ReentrancyGuard {
     bytes32 _root,
     uint[2] calldata _pA, 
     uint[2][2] calldata _pB, 
-    uint[2] calldata _pC
+    uint[2] calldata _pC,
+    uint[1] calldata _pubSignals
   ) external payable nonReentrant {
-
+    
   }
 
   function getLastReceivedMessageDetails()
