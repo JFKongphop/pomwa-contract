@@ -28,6 +28,12 @@ dpd:
 dpw:
 	npx hardhat run --network scroll scripts/withdraw.ts
 
+dpu:
+	npx hardhat run --network scroll scripts/usdc.ts
+
+dpn:
+	npx hardhat run --network sepolia scripts/nft.ts
+
 slt:
 	node shortcuts/sendLinkToken.js
 
