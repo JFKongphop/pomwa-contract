@@ -101,8 +101,6 @@ contract NFTDepositor is OwnerIsCreator, ReentrancyGuard {
 
     ntfPools += 1;
 
-    require(usdc.transfer(owner, REWARD_AMOUNT), "USDC transfer failed");
-
     Client.EVM2AnyMessage memory evm2AnyMessage = Client.EVM2AnyMessage({
       receiver: abi.encode(receiver),
       data: abi.encode(commitment),

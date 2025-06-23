@@ -3,10 +3,19 @@ pragma solidity 0.8.24;
 
 import {Client} from "@chainlink/contracts-ccip/contracts/libraries/Client.sol";
 import {CCIPReceiver} from "@chainlink/contracts-ccip/contracts/applications/CCIPReceiver.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./MerkleTreeWithHistory.sol";
 import "./utils/ReentrancyGuard.sol";
+import "./interfaces/IVerifier.sol";
 
 contract Withdraw is CCIPReceiver, MerkleTreeWithHistory, ReentrancyGuard {
+  IVerifier public immutable verifier;
+  IERC20 public immutable usdc;
+
+
+  bytes32 private s_lastReceivedMessageId;
+  bytes32 private s_lastReceivedText;
+
   event MessageReceived(
     bytes32 indexed messageId,
     uint64 indexed sourceChainSelector,
@@ -18,14 +27,15 @@ contract Withdraw is CCIPReceiver, MerkleTreeWithHistory, ReentrancyGuard {
     uint indexed leafIndex
   );
 
-  bytes32 private s_lastReceivedMessageId;
-  bytes32 private s_lastReceivedText;
 
   constructor(
+    IVerifier _verifier,
     address router, 
     IHasher hasher,
     uint32 merkleTreeHeight
-  ) CCIPReceiver(router) MerkleTreeWithHistory(merkleTreeHeight, hasher) {}
+  ) CCIPReceiver(router) MerkleTreeWithHistory(merkleTreeHeight, hasher) {
+    verifier = _verifier;
+  }
 
   function _ccipReceive(
     Client.Any2EVMMessage memory any2EvmMessage
@@ -52,7 +62,11 @@ contract Withdraw is CCIPReceiver, MerkleTreeWithHistory, ReentrancyGuard {
     uint[2] calldata _pC,
     uint[1] calldata _pubSignals
   ) external payable nonReentrant {
-    
+    uint256 loanAmount = _pubSignals[0] * 10 * 18;
+
+    require(usdc.transferFrom(msg.sender, address(this), loanAmount), "Payback required");
+
+
   }
 
   function getLastReceivedMessageDetails()
