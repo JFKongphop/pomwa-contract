@@ -44,7 +44,7 @@ const config: HardhatUserConfig = {
     }
   },
   etherscan: {
-    apiKey: process.env.S! || "",
+    apiKey: process.env.E! || "",
     customChains: [
       {
         network: "scroll",
