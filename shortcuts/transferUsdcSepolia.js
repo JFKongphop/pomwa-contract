@@ -3,9 +3,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const providerSepolia = process.env.SEPOLIA;
-const providerScroll = process.env.SCROLL;
 const privateKey = process.env.PRIVATE_KEY;
-const usdc = process.env.USDC_SEPOLIA;
+const usdcSepolia = process.env.USDC_SEPOLIA;
 const nftDeposit = process.env.NFT_DEPOSITOR;
 
 const ERC20_ABI = [
@@ -18,20 +17,20 @@ async function main() {
   const provider = new ethers.JsonRpcProvider(providerSepolia);
   const wallet = new ethers.Wallet(privateKey, provider);
   const erc20 = new ethers.Contract(
-    usdc,
+    usdcSepolia,
     ERC20_ABI,
     wallet
   );
 
   const tokenAmount = ethers.parseEther('1000000')
 
-  // const tx1 = await erc20.mint(wallet.address, tokenAmount);
-  // await tx1.wait();
+  const tx1 = await erc20.mint(wallet.address, tokenAmount);
+  await tx1.wait();
 
-  // const balance = await erc20.balanceOf(wallet.address);
-  // console.log(`Balance after mint: ${ethers.formatUnits(balance, 18)}`);
+  const balance = await erc20.balanceOf(wallet.address);
+  console.log(`Balance after mint: ${ethers.formatUnits(balance, 18)}`);
 
-  console.log(`Transferring ${tokenAmount} tokens to ${nftDeposit}...`);
+  console.log(`Transferring ${tokenAmount} tokens to ${nftDeposit}`);
   const tx2 = await erc20.transfer(nftDeposit, tokenAmount);
   await tx2.wait();
 

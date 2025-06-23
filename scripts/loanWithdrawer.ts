@@ -2,18 +2,22 @@ import hre, { ethers } from 'hardhat';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const chainlinkRouter = '0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59';
-const chainlinkToken = '0x779877A7B0D9E8603169DdbD7836e478b4624789';
-const usdc = process.env.USDC_SEPOLIA!;
+const chainlinkRouter = '0x6aF501292f2A33C81B9156203C9A66Ba0d8E3D21';
+const verifier = process.env.VERIFIER!;
+const usdc = process.env.USDC_SCROLL!;
+const hasher = process.env.HASHER!;
+const TREE_LEVELS = 2;
 
-const name = 'NFTDepositor';
+const name = 'LoanWithdrawer';
 
 const deploy = async () => {
   const Contract = await ethers.getContractFactory(name);
   const contract = await Contract.deploy(
-    chainlinkRouter,
-    chainlinkToken,
-    usdc
+    verifier,
+    usdc,
+    chainlinkRouter, 
+    hasher,
+    TREE_LEVELS
   );
 
   await contract.deploymentTransaction()?.wait(3);
@@ -24,12 +28,14 @@ const deploy = async () => {
 
   try {
     await hre.run('verify:verify', {
-      address: contractAddress,
+      address: '0x3B800E554059Fa1c31e3F7FD0DF4BCD581E47aa4',
       contract: `contracts/${name}.sol:${name}`,
       constructorArguments: [
-        chainlinkRouter,
-        chainlinkToken,
-        usdc
+        verifier,
+        usdc,
+        chainlinkRouter, 
+        hasher,
+        TREE_LEVELS
       ],
     });
   }

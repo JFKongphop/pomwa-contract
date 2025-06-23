@@ -4,7 +4,7 @@ dotenv.config();
 
 const providerURL = process.env.SEPOLIA
 const privateKey = process.env.PRIVATE_KEY;
-const depositAddress = process.env.DEPOSIT;
+const depositAddress = process.env.NFT_DEPOSITOR;
 const linkAbi = [
   {
     constant: false,
