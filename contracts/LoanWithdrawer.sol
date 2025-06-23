@@ -64,7 +64,7 @@ contract LoanWithdrawer is CCIPReceiver, MerkleTreeWithHistory, ReentrancyGuard 
     uint[2] calldata _pC,
     uint[1] calldata _pubSignals
   ) external payable nonReentrant {
-    uint256 loanAmount = _pubSignals[0] * 10 * 18;
+    uint256 loanAmount = _pubSignals[0] * 10 ** 18;
 
     require(!nullifiers[nullifier], "Already withdrawn");
 
