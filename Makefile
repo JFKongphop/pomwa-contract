@@ -10,6 +10,9 @@ gt:
 ht:
 	npx hardhat test test/hasher.ts 
 
+nt:
+	npx hardhat test test/nftLocker.ts
+
 deploy:
 	npx hardhat run --network ${chain} scripts/deploy.ts
 
