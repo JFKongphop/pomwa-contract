@@ -8,7 +8,7 @@ import "./MerkleTreeWithHistory.sol";
 import "./utils/ReentrancyGuard.sol";
 import "./interfaces/IVerifier.sol";
 
-contract Withdraw is CCIPReceiver, MerkleTreeWithHistory, ReentrancyGuard {
+contract LoanWithdrawer is CCIPReceiver, MerkleTreeWithHistory, ReentrancyGuard {
   IVerifier public immutable verifier;
   IERC20 public immutable usdc;
 
