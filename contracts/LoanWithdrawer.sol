@@ -12,9 +12,15 @@ contract Withdraw is CCIPReceiver, MerkleTreeWithHistory, ReentrancyGuard {
   IVerifier public immutable verifier;
   IERC20 public immutable usdc;
 
+  struct CommitmentStatus {
+    bytes32 commitment;
+    bool withdrawn;
+  }
 
   bytes32 private s_lastReceivedMessageId;
   bytes32 private s_lastReceivedText;
+
+  mapping(bytes32 => bool) public nullifiers;
 
   event MessageReceived(
     bytes32 indexed messageId,
@@ -22,19 +28,20 @@ contract Withdraw is CCIPReceiver, MerkleTreeWithHistory, ReentrancyGuard {
     address sender,
     bytes32 text
   );
-  event Deposit(
+  event LeafCommitment(
     bytes32 indexed commitment,
     uint indexed leafIndex
   );
 
-
   constructor(
     IVerifier _verifier,
+    address _usdc,
     address router, 
     IHasher hasher,
     uint32 merkleTreeHeight
   ) CCIPReceiver(router) MerkleTreeWithHistory(merkleTreeHeight, hasher) {
     verifier = _verifier;
+    usdc = IERC20(_usdc);
   }
 
   function _ccipReceive(
@@ -43,19 +50,14 @@ contract Withdraw is CCIPReceiver, MerkleTreeWithHistory, ReentrancyGuard {
     s_lastReceivedMessageId = any2EvmMessage.messageId;
     s_lastReceivedText = abi.decode(any2EvmMessage.data, (bytes32));
 
+    nullifiers[s_lastReceivedText] = false;
     uint leafIndex = _insert(s_lastReceivedText);
 
-    emit MessageReceived(
-      any2EvmMessage.messageId,
-      any2EvmMessage.sourceChainSelector,
-      abi.decode(any2EvmMessage.sender, (address)),
-      abi.decode(any2EvmMessage.data, (bytes32))
-    );
-    emit Deposit(s_lastReceivedText, leafIndex);
+    emit LeafCommitment(s_lastReceivedText, leafIndex);
   }
 
   function loanWithdraw(
-    bytes32 _commitment,
+    bytes32 nullifier,
     bytes32 _root,
     uint[2] calldata _pA, 
     uint[2][2] calldata _pB, 
@@ -64,9 +66,13 @@ contract Withdraw is CCIPReceiver, MerkleTreeWithHistory, ReentrancyGuard {
   ) external payable nonReentrant {
     uint256 loanAmount = _pubSignals[0] * 10 * 18;
 
-    require(usdc.transferFrom(msg.sender, address(this), loanAmount), "Payback required");
+    require(!nullifiers[nullifier], "Already withdrawn");
 
+    nullifiers[nullifier] = true;
 
+    require(isKnownRoot(_root), 'invalid root');
+    require(verifier.verifyProof(_pA, _pB, _pC, _pubSignals));
+    require(usdc.transfer(msg.sender, loanAmount), "USDC transfer failed");
   }
 
   function getLastReceivedMessageDetails()
@@ -76,8 +82,4 @@ contract Withdraw is CCIPReceiver, MerkleTreeWithHistory, ReentrancyGuard {
   {
     return (s_lastReceivedMessageId, s_lastReceivedText);
   }
-
-
-
-
 }
