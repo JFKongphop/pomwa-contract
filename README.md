@@ -1,0 +1,3 @@
+# Zadelend: Cross-Chain NFT Collateralized Loan with ZK Withdrawal
+
+Zadelend is a cross-chain, privacy-preserving lending protocol where users deposit NFTs on Ethereum L1 and privately withdraw stablecoin loans on L2. Using zero-knowledge proofs and Chainlink CCIP, the system ensures unlinkable deposits and withdrawals with verifiable execution. Users earn stablecoins instantly upon NFT deposit, then later withdraw loans without revealing which asset they used. All actions are trustless and private — loan amounts are public, but user identities and asset details remain hidden.
