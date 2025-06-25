@@ -151,7 +151,10 @@ contract NFTDepositor is OwnerIsCreator, ReentrancyGuard {
     return messageId;
   }
 
-  function withdrawNft(address nftAddress, uint256 tokenId) external nonReentrant {
+  function withdrawNft(
+    address nftAddress, 
+    uint256 tokenId
+  ) external nonReentrant {
     DepositInfo storage info = depositsInfo[nftAddress][tokenId];
     require(info.owner == msg.sender, "Not depositor");
     require(!info.withdrawn, "Already withdrawn");
