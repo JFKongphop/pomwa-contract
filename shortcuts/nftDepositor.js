@@ -22,7 +22,7 @@ const execution = async () => {
   const nftDepositor = new ethers.Contract(nftDepositAddress, nftDepositABI, wallet);
   const nft = new ethers.Contract(nftAddress, nftABI, wallet);
 
-  const tokenId = 0;
+  const tokenId = 2;
 
   const tx1 = await nft.approve(nftDepositAddress, tokenId);
   await tx1.wait();
