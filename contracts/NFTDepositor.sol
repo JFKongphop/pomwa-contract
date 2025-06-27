@@ -21,7 +21,8 @@ contract NFTDepositor is OwnerIsCreator, ReentrancyGuard {
   event NFTDeposit(
     address indexed nftAddress, 
     address indexed owner,
-    uint256 tokenId,
+    uint256 indexed tokenId,
+    bytes32 messageId,
     uint256 startedTime,
     uint256 expiredTime
   );
@@ -79,7 +80,7 @@ contract NFTDepositor is OwnerIsCreator, ReentrancyGuard {
     uint256 tokenId,
     address receiver,
     bytes32 commitment
-  ) external nonReentrant returns (bytes32 messageId) {
+  ) external nonReentrant {
     address owner = msg.sender;
     IERC721 nft = IERC721(nftAddress);
     require(nft.ownerOf(tokenId) == owner, "Not the NFT owner");
@@ -130,25 +131,16 @@ contract NFTDepositor is OwnerIsCreator, ReentrancyGuard {
     s_linkToken.approve(address(s_router), fees);
     userLinkTokenBalance[owner] -= fees;
 
-    messageId = s_router.ccipSend(destinationScrollSepolia, evm2AnyMessage);
+    bytes32 messageId = s_router.ccipSend(destinationScrollSepolia, evm2AnyMessage);
 
-    emit MessageSent(
-      messageId,
-      destinationScrollSepolia,
-      receiver,
-      commitment,
-      address(s_linkToken),
-      fees
-    );
     emit NFTDeposit(
       nftAddress,
       owner,
       tokenId,
+      messageId,
       block.timestamp,
       unlockTime
     );
-
-    return messageId;
   }
 
   function withdrawNft(
@@ -156,16 +148,24 @@ contract NFTDepositor is OwnerIsCreator, ReentrancyGuard {
     uint256 tokenId
   ) external nonReentrant {
     DepositInfo storage info = depositsInfo[nftAddress][tokenId];
-    require(info.owner == msg.sender, "Not depositor");
+    address owner = msg.sender;
+    require(info.owner == owner, "Not depositor");
     require(!info.withdrawn, "Already withdrawn");
     require(block.timestamp <= info.unlockTime, "NFT expired");
 
-    require(usdc.transferFrom(msg.sender, address(this), REWARD_AMOUNT), "Payback required");
+    require(usdc.transferFrom(owner, address(this), REWARD_AMOUNT), "Payback required");
 
     info.withdrawn = true;
     ntfPools -= 1;
 
-    IERC721(nftAddress).transferFrom(address(this), msg.sender, tokenId);
+    IERC721(nftAddress).transferFrom(address(this), owner, tokenId);
+
+    emit NFTWithdraw(
+      nftAddress, 
+      owner,
+      tokenId,
+      block.timestamp
+    );
   }
 
   function getUnlockTime(address nftAddress, uint256 tokenId) external view returns (uint256) {
