@@ -22,10 +22,10 @@ const execution = async () => {
   const nftDepositor = new ethers.Contract(nftDepositAddress, nftDepositABI, wallet);
   const nft = new ethers.Contract(nftAddress, nftABI, wallet);
 
-  const tokenId = 2;
+  const tokenId = 1;
 
-  const tx1 = await nft.approve(nftDepositAddress, tokenId);
-  await tx1.wait();
+  // const tx1 = await nft.approve(nftDepositAddress, tokenId);
+  // await tx1.wait();
 
   const commitment = await poseidonHash([1, 2, 100]);
 
